@@ -5,6 +5,14 @@ let logger = require('morgan');
 let cookieParser = require('cookie-parser');
 let bodyParser = require('body-parser');
 
+//modules for authentication
+let session = require('express-session');
+let passport = require('passport');
+let passportlocal = require('passport-local');
+let LocalStrategy = passportlocal.Strategy;
+let flash = require('connect-flash');
+
+
 // import "mongoose"
 let mongoose = require('mongoose');
 
@@ -16,7 +24,7 @@ mongoose.connect(process.env.URI || config.URI);
 let db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', () => {
-  console.log("Conneced to MongoDB...");
+  console.log("Connected to MongoDB...");
 });
 
 // define routers
@@ -33,49 +41,38 @@ app.set('view engine', 'ejs');
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({
+  extended: false
+}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '../client')));
+
+// setup session
+app.use(session({
+  secret: "SomeSecret",
+  saveUninitialized: true,
+  resave: true
+}));
 
 // route redirects
 app.use('/', index);
 app.use('/games', games);
 
 // Handle 404 Errors
-  app.use(function(req, res) {
-      res.status(400);
-     res.render('errors/404',{
-      title: '404: File Not Found'
-    });
+app.use((req, res) => {
+  res.status(400);
+  res.render('errors/404', {
+    title: '404: File Not Found'
   });
-
-  // Handle 500 Errors
-  app.use(function(error, req, res, next) {
-      res.status(500);
-      res.render('errors/500', {
-        title:'500: Internal Server Error',
-        error: error
-      });
-  });
-
-/*
-// catch 404 and forward to error handler
-app.use((req, res, next) => {
-  let err = new Error('Not Found');
-  err.status = 404;
-  next(err);
 });
 
-// error handler
-app.use((err, req, res, next) =>{
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+// Handle 500 Errors
+app.use((error, req, res, next) => {
+  res.status(500);
+  res.render('errors/500', {
+    title: '500: Internal Server Error',
+    error: error
+  });
 });
-*/
 
 module.exports = app;

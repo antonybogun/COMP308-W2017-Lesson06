@@ -7,7 +7,7 @@ let gamesSchema = mongoose.Schema({
     cost: Number
 },
 {
-  collection: "games"
+  collection: "game"
 });
 
 module.exports = mongoose.model('games', gamesSchema);

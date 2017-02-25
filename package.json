@@ -17,6 +17,7 @@
     "morgan": "~1.7.0",
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",
+    "passport-local-mongoose": "^4.0.0",
     "serve-favicon": "~2.3.0"
   },
   "engines": {
@@ -38,7 +39,8 @@
     "@types/morgan": "^1.7.32",
     "@types/node": "^7.0.5",
     "@types/passport": "^0.3.3",
-    "@types/passport-local": "^1.0.29"
+    "@types/passport-local": "^1.0.29",
+    "@types/passport-local-mongoose": "^4.0.8"
   },
   "repository": {
     "type": "git",
