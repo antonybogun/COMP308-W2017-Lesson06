@@ -54,6 +54,11 @@ app.use(session({
   resave: true
 }));
 
+//initialize passport and flash
+app.use(flash());
+app.use(passport.initialize());
+app.use(passport.session());
+
 // route redirects
 app.use('/', index);
 app.use('/games', games);
