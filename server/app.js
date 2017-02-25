@@ -54,7 +54,7 @@ app.use(session({
   resave: true
 }));
 
-//initialize passport and flash
+// initialize passport and flash
 app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
@@ -62,6 +62,14 @@ app.use(passport.session());
 // route redirects
 app.use('/', index);
 app.use('/games', games);
+
+// user passport configuration
+let UserModel = require('./models/users');
+let User = UserModel.User;
+
+passport.use(User.createStrategy());
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
 // Handle 404 Errors
 app.use((req, res) => {
