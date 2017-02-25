@@ -14,9 +14,9 @@ let game = require('../models/games');
 // function  to check if the user is authorized
 
 function requireAuth(req, res, next) {
-  //check if the user is logged
+  //check if the user is logged in
   if (!req.isAuthenticated()) {
-    return res.redirect('auth/login');
+    return res.redirect('/login');
   }
   next();
 };
@@ -25,7 +25,8 @@ function requireAuth(req, res, next) {
 router.get('/', (req, res, next) => {
   res.render('content/index', {
     title: 'Home',
-    games: ''
+    games: '',
+    displayName: req.user ? req.user.displayName : ''
   });
 });
 
@@ -33,8 +34,32 @@ router.get('/', (req, res, next) => {
 router.get('/contact', (req, res, next) => {
   res.render('content/contact', {
     title: 'Contact',
-    games: ''
+    games: '',
+    displayName: req.user ? req.user.displayName : ''
   });
 });
+
+/* GET login page. */
+router.get('/login', (req, res, next) => {
+  // check to see if the user is already logged in
+  if (!req.user) {
+    res.render('auth/login', {
+      title: 'Login',
+      games: '',
+      messages: req.flash('loginMessage'),
+      displayName: req.user ? req.user.displayName : ''
+    });
+    return;
+  } else {
+    return res.redirect('/games');
+  }
+});
+
+/* POST /login - process login page */
+router.post('/login', passport.authenticate('local', {
+  successRedirect: '/games',
+  failureRedirect: '/login',
+  failureFlash: true
+}))
 
 module.exports = router;
